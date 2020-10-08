@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="css/bootstrap.css" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <script src="js/jquery.js"></script>
+
+    <script src="js/axios.js"></script>
+    <style>
+      img {
+        height: 50px;
+      }
+      .obtn {
+        background-color: red;
+        border-radius: 10px;
+        text-align: center;
+        font-size: 5px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <table class="table table-bordered">
+      <tr style="background-color: antiquewhite">
+        <td>名称</td>
+        <td>样式</td>
+        <td>价钱</td>
+        <td>数量</td>
+        <td>小计</td>
+        <td>操作</td>
+        <td><input type="button" value="添加" id="otet" /></td>
+      </tr>
+    </table>
+    <script>
+      var tbe = document.querySelectorAll("table")[0];
+      // var otr = document.querySelectorAll("tr");
+      axios.get("  http://localhost:3000/products").then((res) => {
+        // console.log("res.data");
+        var data = res.data;
+        var str = "";
+        for (var id = 0; id < data.length; id++) {
+          str += `
+          <tr style="background:#7a7a7a">
+            <td>${data[id].title}</td>
+            <td>
+              <a href="x.html?id=${id}" data-id="${id}"><img src="${
+            data[id].img
+          }"></a>
+              </td>
+        <td>${data[id].price}</td>
+        <td>${data[id].number}</td>
+        <td>${data[id].price * data[id].number}</td>
+        <td class="btn" data-id="${data[id].id}">删除</td>
+        <td class="obtn" data-id="${data[id].id}">添加购物车</td>
+        </tr>`;
+        }
+        tbe.innerHTML += str;
+        // 删除商品
+        var btn = document.querySelectorAll(".btn");
+        for (var id = 0; id < btn.length; id++) {
+          btn[id].onclick = function () {
+            axios
+              .delete(` http://localhost:3000/products/${id}`)
+              .then((res) => {
+                var id = btn[id].getAttribute("data-id");
+                console.log(res);
+                location.reload();
+              });
+          };
+        }
+        // 添加商品
+        var tet = document.getElementById("otet");
+        tet.onclick = function () {
+          axios.post("http://localhost:3000/products", {
+            img:
+              "https://img10.360buyimg.com/n7/jfs/t1/126645/25/10623/112945/5f43218fE9ff9b12e/be7419fbdc598b8d.jpg",
+            title: "拯救者y8000",
+            price: 5999,
+            number: 1,
+            count: 5999,
+          });
+        };
+        // var obn = document.querySelectorAll(".obtn");
+        // for (let i = 0; i < obn.length; i++) {
+        //   obn[i].onclick = function () {
+        //     let i = this.getAttribute("data-id");
+        //     localStorage.setItem("products", i);
+        //   };
+        // }
+      });
+    </script>
+  </body>
+</html>
